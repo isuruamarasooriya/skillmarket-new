@@ -143,7 +143,7 @@ const Home = () => {
 
       {!loading && filteredServices.length === 0 && (
         <div className="text-center py-20 text-gray-400">
-          No services found matching your search...
+          No services found matching your search.
         </div>
       )}
     </div>
