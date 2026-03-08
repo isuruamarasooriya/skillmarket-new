@@ -23,7 +23,7 @@ const MyServices = () => {
           }
         });
         
-        setServices(data);
+        setServices(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Error fetching my services", err);
       } finally {
@@ -43,7 +43,7 @@ const MyServices = () => {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
-        setServices(services.filter(s => s._id !== id));
+        setServices(prev => prev.filter(s => s._id !== id));
         alert("Deleted successfully! ✅");
       } catch (err) {
         alert("Unable to delete. ❌");
@@ -57,7 +57,7 @@ const MyServices = () => {
       
       {loading ? (
         <p className="text-gray-600 font-medium italic">Loading your gigs...</p>
-      ) : services.length === 0 ? (
+      ) : (!services || services.length === 0) ? (
         <div className="text-center p-10 bg-gray-50 rounded-2xl border border-dashed border-gray-300">
           <p className="text-gray-500 text-lg mb-2">You haven't posted any gigs yet. 🧐</p>
           <Link to="/create-service" className="text-blue-600 font-bold hover:underline">Post your first gig now!</Link>
@@ -74,7 +74,7 @@ const MyServices = () => {
               </tr>
             </thead>
             <tbody>
-              {services.map(service => (
+              {services?.map(service => (
                 <tr key={service._id} className="hover:bg-gray-50 transition-colors duration-200 border-b last:border-none">
                   <td className="p-4 font-medium text-gray-800">{service.title}</td>
                   <td className="p-4 text-emerald-600 font-black">Rs. {service.price}</td>

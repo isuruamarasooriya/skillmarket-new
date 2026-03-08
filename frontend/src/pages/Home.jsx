@@ -16,8 +16,8 @@ const Home = () => {
     const fetchServices = async () => {
       try {
         const { data } = await API.get('/services');
-        setServices(data);
-        setFilteredServices(data); 
+        setServices(Array.isArray(data) ? data : []);
+        setFilteredServices(Array.isArray(data) ? data : []); 
       } catch (err) {
         setError('Server connection error. Please try again later.');
       } finally {
@@ -28,7 +28,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    let results = services;
+    let results = Array.isArray(services) ? services : [];
 
     if (selectedCategory !== 'All') {
       results = results.filter(s => s.category === selectedCategory);
@@ -92,12 +92,10 @@ const Home = () => {
       {error && <div className="text-center text-red-500 font-bold mb-10">{error}</div>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 container mx-auto max-w-7xl">
-        {!loading && filteredServices.map((service) => (
-          
+        {!loading && filteredServices?.map((service) => (
           <div key={service._id} className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 flex flex-col h-full group overflow-hidden">
             
             <div className="p-5 flex flex-col flex-grow">
-              
               <div className="flex justify-between items-center mb-4 shrink-0">
                 <span className="bg-blue-50 text-blue-700 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
                   {service.category}
@@ -107,7 +105,6 @@ const Home = () => {
                 </span>
               </div>
               
-      
               <h2 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2 h-[56px] leading-snug shrink-0">
                 {service.title}
               </h2>
@@ -127,21 +124,18 @@ const Home = () => {
                   </p>
                 </div>
               </div>
-
             </div>
 
-        
             <div className="px-5 pb-5 shrink-0">
               <Link to={`/service/${service._id}`} className="block text-center w-full bg-gray-50 text-blue-700 border border-blue-100 hover:bg-blue-600 hover:text-white font-bold py-2.5 rounded-xl transition duration-300">
                 View Details
               </Link>
             </div>
-
           </div>
         ))}
       </div>
 
-      {!loading && filteredServices.length === 0 && (
+      {!loading && (!filteredServices || filteredServices.length === 0) && (
         <div className="text-center py-20 text-gray-400">
           No services found matching your search.
         </div>

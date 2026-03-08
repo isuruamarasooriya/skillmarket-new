@@ -12,7 +12,8 @@ const ContactSeller = () => {
   useEffect(() => {
     API.get('/services')
       .then(res => {
-        const foundService = res.data.find(s => s._id === id);
+        const services = Array.isArray(res.data) ? res.data : [];
+        const foundService = services.find(s => s._id === id);
         setService(foundService);
       })
       .catch(err => console.error(err));
@@ -48,11 +49,11 @@ const ContactSeller = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-2xl mt-10">
-      <h1 className="text-3xl font-bold mb-4">{service.title}</h1>
-      <p className="text-gray-600 mb-8">{service.description}</p>
+      <h1 className="text-3xl font-bold mb-4">{service?.title}</h1>
+      <p className="text-gray-600 mb-8">{service?.description}</p>
 
       <div className="bg-blue-50 p-6 rounded-xl border border-blue-100">
-        <h3 className="text-xl font-bold mb-4 text-blue-700">Contact {service.seller?.name}</h3>
+        <h3 className="text-xl font-bold mb-4 text-blue-700">Contact {service?.seller?.name}</h3>
         <form onSubmit={handleSendEmail} className="space-y-4">
           <input 
             type="text" placeholder="Your Name" required
