@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import API from '../api';
 import { useNavigate } from 'react-router-dom';
 
 const CreateService = () => {
@@ -37,7 +37,7 @@ const CreateService = () => {
         category 
       };
 
-      await axios.post('http://localhost:5000/api/services', newGig, config);
+      await API.post('/services', newGig, config);
       alert('Gig posted successfully! ✅');
       navigate('/my-services');
     } catch (err) {
@@ -104,6 +104,7 @@ const CreateService = () => {
                 <option value="Web Development">Web Development</option>
                 <option value="IT Support">IT Support</option>
                 <option value="Graphic Design">Graphic Design</option>
+                <option value="Tutoring">Tutoring</option>
               </select>
             </div>
           </div>

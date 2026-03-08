@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api';
 
 const Navbar = () => {
   const [userName, setUserName] = useState('');
@@ -13,7 +13,7 @@ const Navbar = () => {
           const config = {
             headers: { Authorization: `Bearer ${savedUser.token}` }
           };
-          const { data } = await axios.get('http://localhost:5000/api/auth/profile', config);
+          const { data } = await API.get('/auth/profile', config);
           setUserName(data.name);
           localStorage.setItem('user', JSON.stringify({ ...savedUser, name: data.name }));
         } catch (err) {

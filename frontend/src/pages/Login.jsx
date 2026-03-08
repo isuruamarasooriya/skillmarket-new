@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import API from '../api';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -12,30 +13,20 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      const { data } = await API.post('/auth/login', { email, password });
 
-      const data = await response.json();
+      const userData = {
+        ...data.user,
+        token: data.token
+      };
 
-      if (response.ok) {
-        const userData = {
-          ...data.user,
-          token: data.token
-        };
-
-        localStorage.setItem('user', JSON.stringify(userData));
-        
-        alert('Login successful! ✅');
-        navigate('/'); 
-        window.location.reload(); 
-      } else {
-        setError(data.message);
-      }
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      alert('Login successful! ✅');
+      navigate('/'); 
+      window.location.reload(); 
     } catch (err) {
-      setError('Server connection error. Please try again.');
+      setError(err.response?.data?.message || 'Server connection error. Please try again.');
     }
   };
 

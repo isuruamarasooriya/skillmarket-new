@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
+import API from '../api';
 
 const ContactSeller = () => {
   const { id } = useParams();
@@ -9,12 +10,14 @@ const ContactSeller = () => {
   const [sending, setSending] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/services`)
-      .then(res => res.json())
-      .then(data => setService(data.find(s => s._id === id)));
+    API.get('/services')
+      .then(res => {
+        const foundService = res.data.find(s => s._id === id);
+        setService(foundService);
+      })
+      .catch(err => console.error(err));
   }, [id]);
 
- 
   const handleSendEmail = (e) => {
     e.preventDefault();
     setSending(true);
@@ -41,7 +44,7 @@ const ContactSeller = () => {
     .finally(() => setSending(false));
   };
 
-  if (!service) return <p>Loading...</p>;
+  if (!service) return <div className="text-center py-20 font-bold">Loading...</div>;
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-2xl mt-10">
@@ -53,25 +56,27 @@ const ContactSeller = () => {
         <form onSubmit={handleSendEmail} className="space-y-4">
           <input 
             type="text" placeholder="Your Name" required
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
             value={formData.name}
             onChange={(e) => setFormData({...formData, name: e.target.value})}
           />
           <input 
             type="email" placeholder="Your email address" required
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
             value={formData.email}
             onChange={(e) => setFormData({...formData, email: e.target.value})}
           />
           <textarea 
             placeholder="Write your message here…" required
-            className="w-full p-3 border rounded-lg h-32"
+            className="w-full p-3 border rounded-lg h-32 focus:ring-2 focus:ring-blue-400 outline-none"
             value={formData.message}
             onChange={(e) => setFormData({...formData, message: e.target.value})}
           />
           <button 
             type="submit" disabled={sending}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition"
+            className={`w-full py-3 rounded-lg font-bold text-white transition-all ${
+              sending ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 shadow-md'
+            }`}
           >
             {sending ? 'Sending…' : 'Send Message to Seller'}
           </button>

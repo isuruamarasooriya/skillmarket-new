@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../api';
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
@@ -7,9 +7,7 @@ const Profile = () => {
   const [email, setEmail] = useState('');
   const [university, setUniversity] = useState('');
   const [password, setPassword] = useState('');
-  
   const [isEditMode, setIsEditMode] = useState(false);
-  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,7 +20,7 @@ const Profile = () => {
         }
 
         const config = { headers: { Authorization: `Bearer ${savedUser.token}` } };
-        const { data } = await axios.get('http://localhost:5000/api/auth/profile', config);
+        const { data } = await API.get('/auth/profile', config);
         
         setName(data.name || '');
         setEmail(data.email || '');
@@ -47,7 +45,7 @@ const Profile = () => {
       const savedUser = JSON.parse(localStorage.getItem('user'));
       const config = { headers: { Authorization: `Bearer ${savedUser.token}` } };
       
-      const { data } = await axios.put('http://localhost:5000/api/auth/profile', 
+      const { data } = await API.put('/auth/profile', 
         { name, university, password }, config);
       
       alert("Profile updated successfully! ✅");
@@ -65,7 +63,7 @@ const Profile = () => {
         const savedUser = JSON.parse(localStorage.getItem('user'));
         const config = { headers: { Authorization: `Bearer ${savedUser.token}` } };
         
-        await axios.delete('http://localhost:5000/api/auth/profile', config);
+        await API.delete('/auth/profile', config);
         localStorage.removeItem('user');
         alert("Account and all your gigs deleted successfully! ✅");
         window.location.href = '/register'; 

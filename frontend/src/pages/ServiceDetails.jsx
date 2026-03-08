@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api';
 
 const ServiceDetails = () => {
   const { id } = useParams();
@@ -11,7 +11,7 @@ const ServiceDetails = () => {
   useEffect(() => {
     const fetchServiceDetails = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:5000/api/services/${id}`);
+        const { data } = await API.get(`/services/${id}`);
         setService(data);
       } catch (err) {
         console.error(err);
@@ -40,7 +40,7 @@ const ServiceDetails = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
+    <div className="min-h-screen bg-gray-50 py-12 px-4 font-sans">
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         <div className="lg:col-span-2 space-y-6">

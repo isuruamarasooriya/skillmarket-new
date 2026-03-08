@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api';
 
 const EditService = () => {
   const { id } = useParams();
@@ -16,7 +16,7 @@ const EditService = () => {
   useEffect(() => {
     const fetchService = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:5000/api/services/${id}`);
+        const { data } = await API.get(`/services/${id}`);
         setTitle(data.title);
         setShortDescription(data.shortDescription || '');
         setFullDescription(data.fullDescription || '');
@@ -45,7 +45,7 @@ const EditService = () => {
       };
 
       const updateData = { title, shortDescription, fullDescription, price, category };
-      await axios.put(`http://localhost:5000/api/services/${id}`, updateData, config);
+      await API.put(`/services/${id}`, updateData, config);
 
       alert('Gig updated successfully! ✅');
       navigate('/my-services');
@@ -54,7 +54,7 @@ const EditService = () => {
     }
   };
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
+  if (loading) return <p className="text-center mt-10 font-bold">Loading...</p>;
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 py-8">
@@ -122,7 +122,7 @@ const EditService = () => {
             </div>
           </div>
           
-          <button type="submit" className="w-full bg-blue-600 text-white font-bold py-4 rounded-lg hover:bg-blue-700 transition mt-4">
+          <button type="submit" className="w-full bg-blue-600 text-white font-bold py-4 rounded-lg hover:bg-blue-700 transition mt-4 shadow-md">
             Update Gig
           </button>
         </form>

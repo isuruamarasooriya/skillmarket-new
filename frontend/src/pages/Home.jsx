@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api';
 
 const Home = () => {
   const [services, setServices] = useState([]);
@@ -15,7 +15,7 @@ const Home = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/services');
+        const { data } = await API.get('/services');
         setServices(data);
         setFilteredServices(data); 
       } catch (err) {

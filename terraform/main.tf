@@ -35,11 +35,50 @@ resource "aws_route_table_association" "public_assoc" {
   route_table_id = aws_route_table.public_rt.id
 }
 
+resource "aws_security_group" "app_sg" {
+  name        = "skill-market-sg"
+  description = "Allow SSH, Frontend, and Backend traffic"
+  vpc_id      = aws_vpc.main_vpc.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "Skill-Market-SG"
+  }
+}
+
 resource "aws_instance" "app_server" {
-  ami           = "ami-0dee22c13ea7a9a67"
-  instance_type = "t3.micro"
-  subnet_id     = aws_subnet.public_subnet.id
-  key_name      = "skill-market-key"
+  ami                    = "ami-0dee22c13ea7a9a67"
+  instance_type          = "t3.micro"
+  subnet_id              = aws_subnet.public_subnet.id
+  key_name               = "skill-market-key"
+  vpc_security_group_ids = [aws_security_group.app_sg.id]
 
   user_data = <<-EOF
               #!/bin/bash
