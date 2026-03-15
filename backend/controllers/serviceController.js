@@ -2,7 +2,7 @@ const Service = require('../models/Service');
 
 const getServiceById = async (req, res) => {
   try {
-    const service = await Service.findById(req.params.id).populate('seller', 'name university email'); // email එකත් එකතු කළා
+    const service = await Service.findById(req.params.id).populate('seller', 'name university email');
     if (!service) return res.status(404).json({ message: "Service not found." });
     res.status(200).json(service);
   } catch (error) {

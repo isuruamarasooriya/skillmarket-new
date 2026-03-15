@@ -74,7 +74,11 @@ resource "aws_instance" "app_server" {
   user_data = <<-EOF
               #!/bin/bash
               sudo apt-get update -y
-              sudo apt-get install docker.io nginx certbot python3-certbot-nginx awscli -y
+              sudo apt-get install docker.io nginx certbot python3-certbot-nginx unzip -y
+              
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              unzip awscliv2.zip
+              sudo ./aws/install
               
               sudo systemctl start docker
               sudo systemctl enable docker
@@ -97,8 +101,8 @@ resource "aws_instance" "app_server" {
                       proxy_set_header X-Forwarded-Proto \$scheme;
                   }
 
-                  location /api {
-                      proxy_pass http://localhost:5000;
+                  location /api/ {
+                      proxy_pass http://localhost:5000/api/;
                       proxy_http_version 1.1;
                       proxy_set_header Upgrade \$http_upgrade;
                       proxy_set_header Connection "upgrade";
@@ -114,8 +118,8 @@ resource "aws_instance" "app_server" {
               sudo ln -s /etc/nginx/sites-available/skillmarket /etc/nginx/sites-enabled/
               sudo rm -f /etc/nginx/sites-enabled/default
               sudo systemctl restart nginx
-
-              sudo certbot --nginx --non-interactive --agree-tos -m isuruamarasooriya177@gmail.com -d skillmarket-srilanka.duckdns.org
+              
+              sudo certbot --nginx --non-interactive --agree-tos -m isuruamarasooriya177@gmail.com -d skillmarket-srilanka.duckdns.org || true
               EOF
               
   root_block_device {
