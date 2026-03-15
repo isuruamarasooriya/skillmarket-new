@@ -49,37 +49,21 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker build --build-arg VITE_API_URL=http://${{ secrets.EC2_HOST }}:5000/api -t $ECR_REGISTRY/skill-market-frontend:latest ./frontend
+          docker build --build-arg VITE_API_URL=${{ secrets.VITE_API_URL }} -t $ECR_REGISTRY/skill-market-frontend:latest ./frontend
           docker push $ECR_REGISTRY/skill-market-frontend:latest
           
           docker build -t $ECR_REGISTRY/skill-market-backend:latest ./backend
           docker push $ECR_REGISTRY/skill-market-backend:latest
 
-      - name: SSH into EC2 and Deploy
+      - name: SSH into EC2 and Deploy to Kubernetes
         uses: appleboy/ssh-action@v1.0.3
-        env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          envs: MONGO_URI,JWT_SECRET
           script: |
-            aws ecr get-login-password --region ap-south-1 | sudo docker login --username AWS --password-stdin 802104113126.dkr.ecr.ap-south-1.amazonaws.com
-            
             sudo docker stop frontend backend || true
             sudo docker rm frontend backend || true
             
-            sudo docker pull 802104113126.dkr.ecr.ap-south-1.amazonaws.com/skill-market-frontend:latest
-            sudo docker pull 802104113126.dkr.ecr.ap-south-1.amazonaws.com/skill-market-backend:latest
-            
-            sudo docker run -d --name backend -p 5000:5000 \
-              -e PORT=5000 \
-              -e MONGO_URI="$MONGO_URI" \
-              -e JWT_SECRET="$JWT_SECRET" \
-              802104113126.dkr.ecr.ap-south-1.amazonaws.com/skill-market-backend:latest
-            
-            sudo docker run -d --name frontend -p 3000:3000 802104113126.dkr.ecr.ap-south-1.amazonaws.com/skill-market-frontend:latest
-            
-            sudo docker image prune -f
+            sudo kubectl rollout restart deployment frontend-deployment || true
+            sudo kubectl rollout restart deployment backend-deployment || true
