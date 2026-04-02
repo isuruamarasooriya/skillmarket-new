@@ -32,10 +32,10 @@ const ContactSeller = () => {
     };
 
     emailjs.send(
-      'service_iiylz0f', 
-      'template_w1wk4cf',
+      import.meta.env.VITE_EMAILJS_SERVICE_ID, 
+      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
       templateParams,
-      '17IGjbLb0dw4pMvn3'
+      import.meta.env.VITE_EMAILJS_PUBLIC_KEY
     )
     .then(() => {
       alert("Message sent successfully to the seller!✅");

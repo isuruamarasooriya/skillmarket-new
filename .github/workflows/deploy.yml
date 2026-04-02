@@ -49,7 +49,13 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker build --build-arg VITE_API_URL=https://${{ secrets.EC2_HOST }}/api -t $ECR_REGISTRY/skill-market-frontend:latest ./frontend
+          docker build \
+            --build-arg VITE_API_URL=https://${{ secrets.EC2_HOST }}/api \
+            --build-arg VITE_EMAILJS_SERVICE_ID=${{ secrets.VITE_EMAILJS_SERVICE_ID }} \
+            --build-arg VITE_EMAILJS_TEMPLATE_ID=${{ secrets.VITE_EMAILJS_TEMPLATE_ID }} \
+            --build-arg VITE_EMAILJS_PUBLIC_KEY=${{ secrets.VITE_EMAILJS_PUBLIC_KEY }} \
+            -t $ECR_REGISTRY/skill-market-frontend:latest ./frontend
+            
           docker push $ECR_REGISTRY/skill-market-frontend:latest
           
           docker build -t $ECR_REGISTRY/skill-market-backend:latest ./backend
