@@ -42,7 +42,7 @@ A robust monitoring stack is deployed to track system performance:
 
 | Cloud Infrastructure (AWS VPC) | Real-time Monitoring (Grafana) |
 |---|---|
-| ![Architecture Diagram](images/architecture.png) | ![Grafana Dashboard](images/grafana.png) |
+| ![Architecture Diagram](/architecture.png) | ![Grafana Dashboard](/grafana.png) |
 
 ---
 
