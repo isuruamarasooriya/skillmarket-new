@@ -2,7 +2,7 @@
 
 Skill-Market is a freelance marketplace platform designed for university students to offer professional services while enabling clients to hire them for specific tasks. 
 
-This project demonstrates a production-grade deployment strategy, moving beyond standard application hosting to a fully automated cloud infrastructure using Infrastructure as Code (IaC), CI/CD pipelines, and real-time monitoring.
+This project demonstrates a production-grade deployment strategy, moving beyond standard application hosting to a fully automated cloud infrastructure using Infrastructure as Code (IaC), CI/CD pipelines and real-time monitoring.
 
 ---
 
